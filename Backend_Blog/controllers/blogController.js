@@ -1,12 +1,22 @@
 import blogModel from "../models/blogModel.js";
 import userModel from "../models/userModel.js";
+import cloudinary from "../config/cloudinary.js";
 
+//reading time calculate
+
+const calculateReadingTime = (html) => {
+    const text = html.replace(/<[^>]+>/g, "");
+    const words = text.trim().split(/\s+/).length;
+    const wordsPerMinute = 100;
+
+    return Math.ceil(words / wordsPerMinute);
+};
 // Create Blog
 export const createBlog = async (req, res) => {
     try {
-        const { title, author, category, content, description, image } = req.body || {};
+        const { title, author, category, content, description } = req.body || {};
 
-        if (!title || !author || !category || !content || !description || !image) {
+        if (!title || !author || !category || !content || !description || !req.file) {
             return res.status(400).json({
                 message: "Some fields are empty"
             });
@@ -26,14 +36,21 @@ export const createBlog = async (req, res) => {
             });
         }
 
+        //image upload using cloudinary
+
+        const result = await cloudinary.uploader.upload(req.file.path);
+
+        const readingTime = calculateReadingTime(content);
+
         const blog = await blogModel.create({
             title,
             author,
             category,
             content,
             description,
-            image,
+            image: result.secure_url,
             owner: req.user.id,
+            readingTime,
         });
 
         res.status(201).json({

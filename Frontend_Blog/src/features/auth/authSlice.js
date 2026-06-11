@@ -1,17 +1,19 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { registerUser, loginUser } from "./authService";
 
+const storedUser = JSON.parse(localStorage.getItem("user"));
+const storedToken = localStorage.getItem("token");
+
 const initialState = {
-  user: null,
-  token: null,
+  user: storedUser || null,
+  token: storedToken || null,
   loading: false,
   error: null,
   success: null,
 };
 
-/////////////////////////
-// REGISTER THUNK
-/////////////////////////
+// REGISTER
+
 export const register = createAsyncThunk(
   "auth/register",
   async (userData, thunkAPI) => {
@@ -25,9 +27,8 @@ export const register = createAsyncThunk(
   }
 );
 
-/////////////////////////
-// LOGIN THUNK
-/////////////////////////
+// LOGIN
+
 export const login = createAsyncThunk(
   "auth/login",
   async (userData, thunkAPI) => {
@@ -41,9 +42,6 @@ export const login = createAsyncThunk(
   }
 );
 
-/////////////////////////
-// AUTH SLICE
-/////////////////////////
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -52,65 +50,60 @@ const authSlice = createSlice({
     logout: (state) => {
       state.user = null;
       state.token = null;
+      state.loading = false;
       state.error = null;
       state.success = null;
 
-      // optional: clear storage
-      localStorage.removeItem("user");
       localStorage.removeItem("token");
+      localStorage.removeItem("user");
     },
   },
 
   extraReducers: (builder) => {
     builder
 
-      /////////////////////////
       // REGISTER
-      /////////////////////////
+
       .addCase(register.pending, (state) => {
         state.loading = true;
         state.error = null;
-        state.success = null;
       })
+
       .addCase(register.fulfilled, (state, action) => {
         state.loading = false;
-
-        state.user = action.payload.user;
-        state.token = action.payload.token;
-
-        state.success = "Registration successful";
+        state.success = action.payload.message;
       })
+
       .addCase(register.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
 
-      /////////////////////////
       // LOGIN
-      /////////////////////////
+
       .addCase(login.pending, (state) => {
         state.loading = true;
         state.error = null;
-        state.success = null;
       })
+
       .addCase(login.fulfilled, (state, action) => {
         state.loading = false;
 
         state.user = action.payload.user;
         state.token = action.payload.token;
+        state.success = action.payload.message;
 
-        state.success = "Login successful";
-
-        // optional persistence
         localStorage.setItem(
           "user",
           JSON.stringify(action.payload.user)
         );
+
         localStorage.setItem(
           "token",
           action.payload.token
         );
       })
+
       .addCase(login.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
@@ -119,4 +112,5 @@ const authSlice = createSlice({
 });
 
 export const { logout } = authSlice.actions;
+
 export default authSlice.reducer;

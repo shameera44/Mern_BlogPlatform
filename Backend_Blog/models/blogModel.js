@@ -29,12 +29,16 @@ const BlogSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    readingTime: {
+        type: Number,
+        default: 1,
+    },
 
-    owner:{
-    type:mongoose.Schema.Types.ObjectId,
-    ref:"users",
-    required:true
-}
+    owner: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "users",
+        required: true
+    }
 
 })
 
