@@ -1,22 +1,27 @@
 import blogModel from "../models/blogModel.js";
 import userModel from "../models/userModel.js";
 import cloudinary from "../config/cloudinary.js";
+import axios from "axios";
 
-//reading time calculate
 
-const calculateReadingTime = (html) => {
-    const text = html.replace(/<[^>]+>/g, "");
-    const words = text.trim().split(/\s+/).length;
-    const wordsPerMinute = 100;
 
-    return Math.ceil(words / wordsPerMinute);
-};
+
+
+
 // Create Blog
+
 export const createBlog = async (req, res) => {
     try {
-        const { title, author, category, content, description } = req.body || {};
+        const {
+            title,
+            author,
+            category,
+            content,
+            description,
+            imageUrl
+        } = req.body;
 
-        if (!title || !author || !category || !content || !description || !req.file) {
+        if (!title || !author || !category || !content || !description) {
             return res.status(400).json({
                 message: "Some fields are empty"
             });
@@ -36,26 +41,40 @@ export const createBlog = async (req, res) => {
             });
         }
 
-        //image upload using cloudinary
+        let image = "";
 
-        const result = await cloudinary.uploader.upload(req.file.path);
+        // Upload image to Cloudinary
+        if (req.file) {
+            const result = await cloudinary.uploader.upload(req.file.path);
+            image = result.secure_url;
+        }
 
-        const readingTime = calculateReadingTime(content);
+        // Use image URL directly
+        else if (imageUrl) {
+            image = imageUrl;
+        }
 
+        else {
+            return res.status(400).json({
+                message: "Please upload an image or provide an image URL"
+            });
+        }
+
+        
         const blog = await blogModel.create({
             title,
             author,
             category,
             content,
             description,
-            image: result.secure_url,
+            image,
             owner: req.user.id,
-            readingTime,
+            
         });
 
         res.status(201).json({
             message: "Blog created successfully",
-            blog,
+            blog
         });
 
     } catch (error) {
@@ -66,6 +85,7 @@ export const createBlog = async (req, res) => {
 };
 
 // Get All Blogs
+
 export const getAllBlog = async (req, res) => {
     try {
         const blogs = await blogModel.find();
@@ -140,6 +160,8 @@ export const updateBlog = async (req, res) => {
 
 // Delete Blog
 export const deleteBlog = async (req, res) => {
+     console.log("DELETE CONTROLLER HIT");
+
     try {
         const blog = await blogModel.findById(req.params.id);
 
@@ -194,4 +216,45 @@ export const searchBlog = async (req, res) => {
             message: error.message
         });
     }
+};
+
+
+// AI SUMMARY
+
+
+export const generateSummary = async (req, res) => {
+  try {
+    const { content } = req.body;
+
+    if (!content) {
+      return res.status(400).json({ message: "Content required" });
+    }
+
+    const response = await axios.post(
+      `https://generativelanguage.googleapis.com/v1/models/gemini-3.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
+      {
+        contents: [
+          {
+            parts: [
+              {
+                text: `Summarize this blog in 3-4 lines:\n\n${content}`,
+              },
+            ],
+          },
+        ],
+      }
+    );
+
+    const summary =
+      response.data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+    res.json({ summary });
+
+  } catch (error) {
+    console.log("GEMINI ERROR:", error.response?.data || error.message);
+
+    res.status(500).json({
+      message: error.message,
+    });
+  }
 };

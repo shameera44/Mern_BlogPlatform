@@ -7,14 +7,14 @@ import Comment from "../components/comment"
 import ShareButtons from "../components/ShareButton"
 import BlogCard from "../components/BlogCard"
 import { calculateReadingTime } from "../utils/readingTime";
-
+import axios from "axios";
 
 const PostDetails = () => {
 
   const { id } = useParams()
   const blogs = useSelector(state => state.blog.posts)
 
-  const blog = blogs.find(post => post.id === Number(id))
+  const blog = blogs.find(post => post._id === id)
 
   const [summary, setSummary] = useState("")
 const [loading, setLoading] = useState(false);
@@ -28,18 +28,36 @@ const [loading, setLoading] = useState(false);
 
   //  Related posts
   const relatedPosts = blogs
-    .filter(post =>
-      post.category?.toLowerCase() === blog.category?.toLowerCase() &&
-      post.id !== blog.id
-    )
-    .slice(0, 3);
+  .filter(
+    post =>
+      post.category?.toLowerCase() ===
+        blog.category?.toLowerCase() &&
+      post._id !== blog._id
+  )
+  .slice(0, 3);
 
   //  Summary function
-  const generateSummary = () => {
-    const cleanText = blog.content.replace(/<[^>]+>/g, "")
-    const words = cleanText.split(" ").slice(0, 30).join(" ")
-    setSummary(words + "...")
+  
+  const generateSummary = async () => {
+  try {
+    setLoading(true);
+
+    const response = await axios.post(
+      "http://localhost:5000/api/blogs/summary",
+      {
+        content: blog.content,
+      }
+    );
+
+    setSummary(response.data.summary);
+
+  } catch (error) {
+    console.log(error);
+    alert("Failed to generate summary");
+  } finally {
+    setLoading(false);
   }
+};
 
   const speakSummary = () => {
     if (!summary) return;
@@ -135,7 +153,7 @@ const [loading, setLoading] = useState(false);
         {relatedPosts.length > 0 ? (
           relatedPosts.map(post => (
             <BlogCard
-              key={post.id}
+              key={post._id}
               {...post}
               searchTerm=""
               onEdit={() => { }}

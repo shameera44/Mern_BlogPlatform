@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { calculateReadingTime } from "../utils/readingTime";
 
 const BlogCard = ({
   id,
@@ -7,12 +8,14 @@ const BlogCard = ({
   author,
   category,
   image,
-  readingTime,
+  content,
   onEdit,
   onDelete,
   searchTerm
 }) => {
 
+  const readingTime = calculateReadingTime(content);
+  
   // Highlight search text
   const highlightText = (text) => {
     if (!searchTerm || !text) return text;

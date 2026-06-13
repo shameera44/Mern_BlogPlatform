@@ -9,8 +9,7 @@ import toast from "react-hot-toast";
 const Home = ({ searchTerm }) => {
 
   const blogs = useSelector(state => state.blog.posts || []);
-  console.log("Blogs:", blogs);
-  const user = useSelector(state => state.auth.loggedinUser);
+  const user = useSelector(state => state.auth.user);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -22,6 +21,7 @@ const Home = ({ searchTerm }) => {
   const otherPageCount = 6;
 
   // CATEGORY FILTER
+
   const categoryFiltered =
     selectedCategory === "all"
       ? blogs
@@ -40,8 +40,11 @@ const Home = ({ searchTerm }) => {
   let currentBlogs = [];
 
   if (currentPage === 1) {
+
     currentBlogs = searchFiltered.slice(0, firstPageCount);
+
   } else {
+
     const start = firstPageCount + (currentPage - 2) * otherPageCount;
     const end = start + otherPageCount;
     currentBlogs = searchFiltered.slice(start, end);
@@ -69,6 +72,7 @@ const Home = ({ searchTerm }) => {
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row p-5 bg-gray-100 dark:bg-gray-900 text-black dark:text-white">
+
       {/* SIDEBAR */}
       <Sidebar setSelectedCategory={setSelectedCategory} />
 
@@ -101,8 +105,6 @@ const Home = ({ searchTerm }) => {
 
         {/* BLOG GRID */}
 
-        {/* title={blog.title}
-        description={blog.description} */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
 
           {currentBlogs.length > 0 ? (
@@ -117,20 +119,28 @@ const Home = ({ searchTerm }) => {
                   category={blog.category}
                   image={blog.image}
                   content={blog.content}
-                  readingTime={blog.readingTime}
                   searchTerm={searchTerm}
                   onEdit={() => navigate(`/edit/${blog._id}`)}
-                  onDelete={() => {
+
+                  onDelete={async () => {
+                    console.log("User:", user);
+                    console.log("Token:", localStorage.getItem("token"));
+                    console.log("Delete clicked:", blog._id);
+
                     if (!user) {
                       toast.error("Please login to delete blog");
                       navigate("/login");
                       return;
                     }
 
-                    if (window.confirm("Delete this blog?")) {
-                      dispatch(deleteBlog(blog._id));
+                    try {
+                      const result = await dispatch(deleteBlog(blog._id)).unwrap();
+                      console.log("Delete result:", result);
+
                       toast.success("Blog deleted");
-                      setCurrentPage(1);
+                    } catch (err) {
+                      console.log("Delete error:", err);
+                      toast.error(err || "Delete failed");
                     }
                   }}
                 />
@@ -146,8 +156,8 @@ const Home = ({ searchTerm }) => {
         </div>
 
         {/* PAGINATION */}
-        <div className="flex justify-center items-center gap-2 mt-10">
 
+        <div className="flex justify-center items-center gap-2 mt-10">
           <button
             onClick={() => setCurrentPage(prev => prev - 1)}
             disabled={currentPage === 1}

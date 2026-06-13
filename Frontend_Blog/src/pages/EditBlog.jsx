@@ -1,5 +1,3 @@
-
-
 import { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { updateBlog } from "../features/blog/blogSlice";
@@ -8,7 +6,8 @@ import toast from "react-hot-toast";
 import Quill from "quill";
 import "quill/dist/quill.snow.css";
 
-const EditPost = () => {
+const EditBlog = () => {
+
   const { id } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -16,33 +15,36 @@ const EditPost = () => {
   const editorRef = useRef(null);
   const quillRef = useRef(null);
 
+  // 🔥 FIXED: safe id comparison
   const blogs = useSelector(state => state.blog.posts);
-  const blog = blogs.find(b => b.id === parseInt(id));
+  const blog = blogs.find(
+    b => String(b._id) === String(id)
+  );
+
+  const loading = useSelector(state => state.blog.loading);
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [content, setContent] = useState("");
   const [author, setAuthor] = useState("");
   const [category, setCategory] = useState("");
   const [readingTime, setReadingTime] = useState(5);
   const [image, setImage] = useState("");
 
-
+  // Load blog data into state
   useEffect(() => {
     if (blog) {
-      setTitle(blog.title);
-      setDescription(blog.description);
-      setContent(blog.content);
-      setAuthor(blog.author);
-      setCategory(blog.category);
-      setReadingTime(blog.readingTime);
-      setImage(blog.image);
+      setTitle(blog.title || "");
+      setDescription(blog.description || "");
+      setAuthor(blog.author || "");
+      setCategory(blog.category || "");
+      setReadingTime(blog.readingTime || 5);
+      setImage(blog.image || "");
     }
   }, [blog]);
 
-  //  Initialize Quill 
+  // Initialize Quill editor
   useEffect(() => {
-    if (!quillRef.current) {
+    if (!quillRef.current && editorRef.current) {
       quillRef.current = new Quill(editorRef.current, {
         theme: "snow",
         placeholder: "Edit your blog content...",
@@ -51,43 +53,48 @@ const EditPost = () => {
             ["bold", "italic", "underline"],
             [{ header: [1, 2, 3, false] }],
             [{ list: "ordered" }, { list: "bullet" }],
-            ["link"]
-          ]
-        }
+            ["link"],
+          ],
+        },
       });
 
-      // update content when typing
+      // update content on typing (optional)
       quillRef.current.on("text-change", () => {
-        setContent(quillRef.current.root.innerHTML);
+        // content is directly read during submit (no state needed)
       });
     }
   }, []);
 
-  // Set existing content into editor
+  // Set existing content into Quill
   useEffect(() => {
-    if (quillRef.current && blog) {
-      quillRef.current.root.innerHTML = blog.content || "";
+    if (quillRef.current && blog?.content) {
+      quillRef.current.root.innerHTML = blog.content;
     }
   }, [blog]);
 
-
-  const handleSubmit = (e) => {
+  // Submit update (ASYNC THUNK)
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const updatedBlog = {
-      id: blog.id,
+      id: blog._id,
       title,
       description,
-      content,
+      content: quillRef.current.root.innerHTML,
       author,
       category,
-      readingTime,
+      readingTime: Number(readingTime),
       image,
     };
 
-    dispatch(updateBlog(updatedBlog));
-    toast.success("Your blog is updated");
-    navigate("/");
+    try {
+      await dispatch(updateBlog(updatedBlog)).unwrap();
+
+      toast.success("Blog updated successfully");
+      navigate("/");
+    } catch (error) {
+      toast.error(error || "Update failed");
+    }
   };
 
   if (!blog) return <p className="p-6">Blog not found!</p>;
@@ -97,8 +104,8 @@ const EditPost = () => {
       <h1 className="text-2xl font-bold mb-4">Edit Blog</h1>
 
       <form
-        className="space-y-4 border-2 border-gray-200 p-5 rounded-xl shadow-xl"
         onSubmit={handleSubmit}
+        className="space-y-4 border-2 border-gray-200 p-5 rounded-xl shadow-xl"
       >
         {/* Title */}
         <input
@@ -106,7 +113,7 @@ const EditPost = () => {
           placeholder="Title"
           className="w-full border p-2"
           value={title}
-          onChange={e => setTitle(e.target.value)}
+          onChange={(e) => setTitle(e.target.value)}
           required
         />
 
@@ -116,11 +123,11 @@ const EditPost = () => {
           placeholder="Description"
           className="w-full border p-2"
           value={description}
-          onChange={e => setDescription(e.target.value)}
+          onChange={(e) => setDescription(e.target.value)}
           required
         />
 
-        {/* CONTENT */}
+        {/* CONTENT EDITOR */}
         <label className="font-semibold">Edit Content</label>
         <div
           ref={editorRef}
@@ -133,7 +140,7 @@ const EditPost = () => {
           placeholder="Author"
           className="w-full border p-2"
           value={author}
-          onChange={e => setAuthor(e.target.value)}
+          onChange={(e) => setAuthor(e.target.value)}
           required
         />
 
@@ -143,7 +150,7 @@ const EditPost = () => {
           placeholder="Category"
           className="w-full border p-2"
           value={category}
-          onChange={e => setCategory(e.target.value)}
+          onChange={(e) => setCategory(e.target.value)}
           required
         />
 
@@ -153,7 +160,7 @@ const EditPost = () => {
           placeholder="Reading Time (min)"
           className="w-full border p-2"
           value={readingTime}
-          onChange={e => setReadingTime(e.target.value)}
+          onChange={(e) => setReadingTime(Number(e.target.value))}
           required
         />
 
@@ -163,16 +170,19 @@ const EditPost = () => {
           placeholder="Image URL"
           className="w-full border p-2"
           value={image}
-          onChange={e => setImage(e.target.value)}
+          onChange={(e) => setImage(e.target.value)}
         />
 
         {/* Submit */}
-        <button className="bg-green-600 text-white px-4 py-2 rounded w-full">
-          Update
+        <button
+          disabled={loading}
+          className="bg-green-600 text-white px-4 py-2 rounded w-full"
+        >
+          {loading ? "Updating..." : "Update Blog"}
         </button>
       </form>
     </div>
   );
 };
 
-export default EditPost;
+export default EditBlog;

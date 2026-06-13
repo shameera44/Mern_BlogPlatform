@@ -4,7 +4,7 @@ import upload from "../middleware/uploadMiddleware.js";
 
 const router = express.Router();
 
-import {createBlog, getAllBlog ,getSingleBlog ,updateBlog,deleteBlog,searchBlog} from '../controllers/blogController.js';
+import {createBlog, getAllBlog ,getSingleBlog ,updateBlog,deleteBlog,searchBlog, generateSummary} from '../controllers/blogController.js';
 
 router.post('/create',protect, upload.single("image"),createBlog);
 router.get('/',getAllBlog);
@@ -12,6 +12,7 @@ router.get("/search", searchBlog);
 router.get('/:id',getSingleBlog);
 router.put('/:id',protect,updateBlog);
 router.delete('/:id',protect,deleteBlog)
+router.post("/summary", generateSummary);
 
 export default router;
 

@@ -5,7 +5,7 @@ const Sidebar = ({ setSelectedCategory }) => {
     "react",
     "javascript",
     "python",
-    "artificialintelligence",
+    "artificial Intelligence",
   ];
 
   return (

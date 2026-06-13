@@ -16,6 +16,12 @@ const CreateBlog = () => {
   });
 
   const [image, setImage] = useState(null);
+  const [imageType, setImageType] = useState("upload");
+  const [imageUrl, setImageUrl] = useState("");
+
+  const handleImageChange = (e) => {
+    setImage(e.target.files[0]);
+  };
 
   const handleChange = (e) => {
     setFormData({
@@ -34,7 +40,14 @@ const CreateBlog = () => {
     blogData.append("category", formData.category);
     blogData.append("description", formData.description);
     blogData.append("content", formData.content);
-    blogData.append("image", image);
+
+    if (imageType === "upload" && image) {
+      blogData.append("image", image);
+    }
+
+    if (imageType === "url" && imageUrl) {
+      blogData.append("imageUrl", imageUrl);
+    }
 
     try {
       await dispatch(createBlog(blogData)).unwrap();
@@ -100,15 +113,48 @@ const CreateBlog = () => {
           required
         />
 
-        <input
-          type="file"
-          accept="image/*"
-          className="border p-2 w-full mb-3"
-          onChange={(e) =>
-            setImage(e.target.files[0])
-          }
-          required
-        />
+        <h3 className="font-semibold mb-2">Image Source</h3>
+
+        <div className="flex gap-6 mb-4">
+          <label>
+            <input
+              type="radio"
+              value="upload"
+              checked={imageType === "upload"}
+              onChange={(e) => setImageType(e.target.value)}
+            />
+            <span className="ml-2">Upload Image</span>
+          </label>
+
+          <label>
+            <input
+              type="radio"
+              value="url"
+              checked={imageType === "url"}
+              onChange={(e) => setImageType(e.target.value)}
+            />
+            <span className="ml-2">Image URL</span>
+          </label>
+        </div>
+
+        {imageType === "upload" ? (
+          <input
+            type="file"
+            name="image"
+            onChange={handleImageChange}
+            className="w-full border p-2 rounded"
+          />
+        ) : (
+          <input
+            type="text"
+            value={imageUrl}
+            onChange={(e) => setImageUrl(e.target.value)}
+            placeholder="https://example.com/image.jpg"
+            className="w-full border p-2 rounded"
+          />
+        )}
+
+
 
         <button
           type="submit"
