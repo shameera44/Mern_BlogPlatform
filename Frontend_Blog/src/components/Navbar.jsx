@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../features/auth/authSlice";
 import { useState, useEffect } from "react";
 
-const Navbar = () => {
+const Navbar = ({ setSearchTerm }) => {
   const dispatch = useDispatch();
 
   const user = useSelector((state) => state.auth.user);
@@ -22,19 +22,21 @@ const Navbar = () => {
     }
   }, []);
 
-  const toggleDarkMode = () => {
-    document.documentElement.classList.toggle("dark");
+ const toggleDarkMode = () => {
+  document.documentElement.classList.toggle("dark");
 
-    const isDark =
-      document.documentElement.classList.contains("dark");
+  console.log(document.documentElement.className);
 
-    localStorage.setItem(
-      "theme",
-      isDark ? "dark" : "light"
-    );
+  const isDark =
+    document.documentElement.classList.contains("dark");
 
-    setDarkMode(isDark);
-  };
+  localStorage.setItem(
+    "theme",
+    isDark ? "dark" : "light"
+  );
+
+  setDarkMode(isDark);
+};
 
   return (
     <nav className="bg-gray-700 text-white px-6 py-4 flex justify-between items-center shadow-md">
@@ -54,6 +56,15 @@ const Navbar = () => {
           </span>
         </h1>
       </div>
+
+      {/* search input */}
+
+      <input
+        type="text"
+        placeholder="Search title, author, category..."
+        className="px-3 py-1 rounded text-black bg-white"
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
 
       {/* Desktop Menu */}
       <div className="hidden md:flex items-center gap-5">

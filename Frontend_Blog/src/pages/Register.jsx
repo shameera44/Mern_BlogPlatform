@@ -32,7 +32,7 @@ const Register = () => {
     <div className="flex justify-center mt-10">
       <form
         onSubmit={handleSubmit}
-        className="w-96 p-6 shadow-lg rounded-lg"
+        className="w-96 p-6 shadow-lg rounded-lg bg-blue-100"
       >
         <h1 className="text-2xl font-bold mb-4">
           Register
@@ -42,7 +42,7 @@ const Register = () => {
           type="text"
           name="username"
           placeholder="Username"
-          className="border p-2 w-full mb-3"
+          className="border p-2 w-full mb-3 rounded-md"
           onChange={handleChange}
         />
 
@@ -50,7 +50,7 @@ const Register = () => {
           type="email"
           name="email"
           placeholder="Email"
-          className="border p-2 w-full mb-3"
+          className="border p-2 w-full mb-3 rounded-md"
           onChange={handleChange}
         />
 
@@ -58,7 +58,7 @@ const Register = () => {
           type="password"
           name="password"
           placeholder="Password"
-          className="border p-2 w-full mb-3"
+          className="border p-2 w-full mb-3 rounded-md"
           onChange={handleChange}
         />
 

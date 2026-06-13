@@ -38,7 +38,7 @@ const Login = () => {
     <div className="flex justify-center mt-20">
       <form
         onSubmit={handleSubmit}
-        className="w-96 p-6 shadow-lg rounded-lg"
+        className="w-96 p-6 shadow-lg rounded-lg bg-blue-100"
       >
         <h1 className="text-2xl font-bold mb-4">
           Login
@@ -49,7 +49,7 @@ const Login = () => {
           name="email"
           placeholder="Email"
           value={formData.email}
-          className="border p-2 w-full mb-3"
+          className="border p-2 w-full mb-3 rounded-md"
           onChange={handleChange}
           required
         />
@@ -59,7 +59,7 @@ const Login = () => {
           name="password"
           placeholder="Password"
           value={formData.password}
-          className="border p-2 w-full mb-3"
+          className="border p-2 w-full mb-3 rounded-md"
           onChange={handleChange}
           required
         />

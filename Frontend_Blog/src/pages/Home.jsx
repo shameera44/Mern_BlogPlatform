@@ -32,11 +32,12 @@ const Home = ({ searchTerm }) => {
   // SEARCH FILTER
   const searchFiltered = categoryFiltered.filter(blog =>
     blog.title?.toLowerCase().includes(searchTerm?.toLowerCase() || "") ||
-    blog.description?.toLowerCase().includes(searchTerm?.toLowerCase() || "") ||
-    blog.author?.toLowerCase().includes(searchTerm?.toLowerCase() || "")
+    blog.author?.toLowerCase().includes(searchTerm?.toLowerCase() || "") ||
+    blog.category?.toLowerCase().includes(searchTerm?.toLowerCase() || "")
   );
 
   // PAGINATION LOGIC
+
   let currentBlogs = [];
 
   if (currentPage === 1) {
@@ -71,8 +72,7 @@ const Home = ({ searchTerm }) => {
   }, [searchTerm, selectedCategory]);
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row p-5 bg-gray-100 dark:bg-gray-900 text-black dark:text-white">
-
+    <div className="min-h-screen flex flex-col md:flex-row p-5 bg-white dark:bg-black text-black dark:text-white">
       {/* SIDEBAR */}
       <Sidebar setSelectedCategory={setSelectedCategory} />
 
