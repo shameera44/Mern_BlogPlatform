@@ -42,13 +42,13 @@ const PostDetails = () => {
   const generateSummary = async () => {
     try {
       setLoading(true);
-
-      const response = await axios.post(
-        "http://localhost:5000/api/blogs/summary",
-        {
-          content: blog.content,
-        }
-      );
+      
+const response = await axios.post(
+  `${import.meta.env.VITE_API_URL}/blogs/summary`,
+  {
+    content: blog.content,
+  }
+);
 
       setSummary(response.data.summary);
     } catch (error) {
