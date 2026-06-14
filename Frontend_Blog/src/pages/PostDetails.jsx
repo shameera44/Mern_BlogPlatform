@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useState } from "react";
-import Comment from "../components/comment";
+import Comment from "../components/Comment";
 import ShareButtons from "../components/ShareButton";
 import BlogCard from "../components/BlogCard";
 import { calculateReadingTime } from "../utils/readingTime";
@@ -42,7 +42,7 @@ const PostDetails = () => {
   const generateSummary = async () => {
     try {
       setLoading(true);
-      
+
 const response = await axios.post(
   `${import.meta.env.VITE_API_URL}/blogs/summary`,
   {
