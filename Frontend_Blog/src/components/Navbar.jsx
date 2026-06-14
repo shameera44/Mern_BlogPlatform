@@ -39,8 +39,7 @@ const Navbar = ({ setSearchTerm }) => {
 };
 
   return (
-    <nav className="bg-gray-700 text-white px-6 py-4 flex justify-between items-center shadow-md">
-
+    <nav className="sticky top-0 z-50 flex justify-between items-center px-6 py-4 shadow-md bg-gray-400 text-black dark:bg-gray-900 dark:text-white transition-colors">
       {/* Logo + Title */}
       <div className="flex items-center gap-3">
         <img
