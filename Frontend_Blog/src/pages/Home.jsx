@@ -120,30 +120,53 @@ const Home = ({ searchTerm }) => {
                   image={blog.image}
                   content={blog.content}
                   searchTerm={searchTerm}
-                  onEdit={() => navigate(`/edit/${blog._id}`)}
+
+                  onEdit={() => {
+                    console.log("User:", user);
+                    console.log("Blog Owner:", blog.owner);
+
+                    // 1. check login
+                    if (!user) {
+                      toast.error("Please login to edit blog");
+                      navigate("/login");
+                      return;
+                    }
+
+                    // 2. check ownership
+                    if (user.id !== blog.owner) {
+                      toast.error("You are not the author of this blog");
+                      return;
+                    }
+
+                    navigate(`/edit/${blog._id}`);
+                  }}
 
                   onDelete={async () => {
                     console.log("User:", user);
-                    console.log("Token:", localStorage.getItem("token"));
-                    console.log("Delete clicked:", blog._id);
+                    console.log("Blog Owner:", blog.owner);
 
+                    // 1. login check
                     if (!user) {
                       toast.error("Please login to delete blog");
                       navigate("/login");
                       return;
                     }
 
-                    try {
-                      const result = await dispatch(deleteBlog(blog._id)).unwrap();
-                      console.log("Delete result:", result);
+                    // 2. ownership check
+                    if (user.id !== blog.owner) {
+                      toast.error("You are not the author of this blog");
+                      return;
+                    }
 
+                    try {
+                      await dispatch(deleteBlog(blog._id)).unwrap();
                       toast.success("Blog deleted");
                     } catch (err) {
-                      console.log("Delete error:", err);
                       toast.error(err || "Delete failed");
                     }
                   }}
                 />
+
 
               </div>
             ))

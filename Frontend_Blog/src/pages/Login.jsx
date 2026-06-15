@@ -16,6 +16,7 @@ const Login = () => {
     password: "",
   });
 
+  // redirect after login success
   useEffect(() => {
     if (user) {
       navigate("/");

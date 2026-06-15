@@ -9,13 +9,16 @@ import CreateBlog from "./pages/CreateBlog";
 import EditBlog from "./pages/EditBlog";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PageNotFound from "./pages/PageNotFound";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   const [searchTerm, setSearchTerm] = useState("");
 
   return (
     <BrowserRouter>
-      <Navbar  setSearchTerm={setSearchTerm}/>
+
+      <Toaster position="top-right" />
+      <Navbar setSearchTerm={setSearchTerm} />
 
       <Routes>
         <Route path="/" element={<Home searchTerm={searchTerm} />} />

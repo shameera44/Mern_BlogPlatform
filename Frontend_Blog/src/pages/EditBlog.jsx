@@ -27,7 +27,6 @@ const EditBlog = () => {
   const [description, setDescription] = useState("");
   const [author, setAuthor] = useState("");
   const [category, setCategory] = useState("");
-  const [readingTime, setReadingTime] = useState(5);
   const [image, setImage] = useState("");
 
   // Load blog data into state
@@ -37,7 +36,6 @@ const EditBlog = () => {
       setDescription(blog.description || "");
       setAuthor(blog.author || "");
       setCategory(blog.category || "");
-      setReadingTime(blog.readingTime || 5);
       setImage(blog.image || "");
     }
   }, [blog]);
@@ -83,7 +81,6 @@ const EditBlog = () => {
       content: quillRef.current.root.innerHTML,
       author,
       category,
-      readingTime: Number(readingTime),
       image,
     };
 
@@ -117,23 +114,6 @@ const EditBlog = () => {
           required
         />
 
-        {/* Description */}
-        <input
-          type="text"
-          placeholder="Description"
-          className="w-full border p-2"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          required
-        />
-
-        {/* CONTENT EDITOR */}
-        <label className="font-semibold">Edit Content</label>
-        <div
-          ref={editorRef}
-          className="bg-white h-[400px] border rounded"
-        ></div>
-
         {/* Author */}
         <input
           type="text"
@@ -154,15 +134,23 @@ const EditBlog = () => {
           required
         />
 
-        {/* Reading Time */}
+        {/* Description */}
         <input
-          type="number"
-          placeholder="Reading Time (min)"
+          type="text"
+          placeholder="Description"
           className="w-full border p-2"
-          value={readingTime}
-          onChange={(e) => setReadingTime(Number(e.target.value))}
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
           required
         />
+
+        {/* CONTENT EDITOR */}
+        <label className="font-semibold">Edit Content</label>
+        <div
+          ref={editorRef}
+          className="bg-white h-[400px] border rounded"
+        ></div>
+
 
         {/* Image */}
         <input
