@@ -36,10 +36,10 @@ const Login = () => {
   };
 
   return (
-    <div className="flex justify-center mt-20">
+    <div className="flex justify-center mt-20 bg-gray-200">
       <form
         onSubmit={handleSubmit}
-        className="w-96 p-6 shadow-lg rounded-lg bg-blue-100"
+        className="w-96 p-6 shadow-lg rounded-lg bg-blue-200"
       >
         <h1 className="text-2xl font-bold mb-4">
           Login
