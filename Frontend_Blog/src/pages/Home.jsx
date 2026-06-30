@@ -1,10 +1,12 @@
-import Sidebar from "../components/Sidebar";
+
 import BlogCard from "../components/BlogCard";
 import { useSelector, useDispatch } from "react-redux";
 import { deleteBlog, fetchBlogs } from "../features/blog/blogSlice";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
+import HeroSection from "../components/HeroSection";
+import CategorySection from "../components/CategorySection";
 
 const Home = ({ searchTerm }) => {
 
@@ -72,34 +74,34 @@ const Home = ({ searchTerm }) => {
   }, [searchTerm, selectedCategory]);
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row p-5 bg-white dark:bg-black text-black dark:text-white">
-      {/* SIDEBAR */}
-      <Sidebar setSelectedCategory={setSelectedCategory} />
+    <div className="min-h-screen bg-white dark:bg-black text-black dark:text-white">
+
 
       {/* MAIN CONTENT */}
-      <div className="flex-1 p-2 ">
+      <div className="max-w-7xl mx-auto px-3 py-3">
 
-        {/* HERO SECTION */}
+
+        {/* Hero Section */}
+
         {currentPage === 1 && (
-          <div className="w-full h-80 lg:h-[500px] relative rounded-lg overflow-hidden">
-            <img
-              src="https://freerangestock.com/sample/178096/modern-workspace-with-laptop-coffee-and-plant-on-wooden-desk.jpg"
-              alt="Hero"
-              className="w-full h-full object-cover brightness-90"
-            />
-            <div className="absolute inset-0 flex flex-col justify-center items-center text-center text-white px-5">
-              <h1 className="text-3xl lg:text-5xl font-bold mb-3">
-                Welcome to BlogSphere
-              </h1>
-              <p className="text-lg lg:text-2xl">
-                Explore blogs with BlogSphere.
-              </p>
-            </div>
-          </div>
+          <HeroSection
+            blogs={blogs}
+            user={user}
+          />
         )}
 
+
+        {/* Category Section */}
+
+        <CategorySection
+          selectedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
+        />
+
+
+
         {/* TITLE */}
-        <h1 className="text-4xl font-bold mb-4 mt-5 bg-gray-500 text-white text-center py-2 rounded">
+        <h1 className="text-4xl font-bold mb-4 mt-2 bg-gray-500 text-white text-center py-2 rounded">
           Latest Blogs
         </h1>
 

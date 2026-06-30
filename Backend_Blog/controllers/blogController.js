@@ -4,10 +4,6 @@ import cloudinary from "../config/cloudinary.js";
 import axios from "axios";
 
 
-
-
-
-
 // Create Blog
 
 export const createBlog = async (req, res) => {

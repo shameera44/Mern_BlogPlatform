@@ -1,9 +1,10 @@
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import logo from "../images/logo.png";
 import menuIcon from "../images/menu.svg";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../features/auth/authSlice";
 import { useState, useEffect } from "react";
+import { Moon, Sun } from "lucide-react";
 
 const Navbar = ({ setSearchTerm }) => {
   const dispatch = useDispatch();
@@ -22,24 +23,24 @@ const Navbar = ({ setSearchTerm }) => {
     }
   }, []);
 
- const toggleDarkMode = () => {
-  document.documentElement.classList.toggle("dark");
+  const toggleDarkMode = () => {
+    document.documentElement.classList.toggle("dark");
 
-  console.log(document.documentElement.className);
+    console.log(document.documentElement.className);
 
-  const isDark =
-    document.documentElement.classList.contains("dark");
+    const isDark =
+      document.documentElement.classList.contains("dark");
 
-  localStorage.setItem(
-    "theme",
-    isDark ? "dark" : "light"
-  );
+    localStorage.setItem(
+      "theme",
+      isDark ? "dark" : "light"
+    );
 
-  setDarkMode(isDark);
-};
+    setDarkMode(isDark);
+  };
 
   return (
-    <nav className="sticky top-0 z-50 flex justify-between items-center px-6 py-4 shadow-md bg-gray-400 text-black dark:bg-gray-900 dark:text-white transition-colors">
+    <nav className="sticky top-0 z-50 flex justify-between items-center px-6 py-4 shadow-md bg-white/90 backdrop-blur-md text-black dark:bg-gray-900/90 dark:text-white transition-colors">
       {/* Logo + Title */}
       <div className="flex items-center gap-3">
         <img
@@ -48,9 +49,9 @@ const Navbar = ({ setSearchTerm }) => {
           className="w-10 h-10"
         />
 
-        <h1 className="text-2xl font-bold">
+        <h1 className="text-3xl font-extrabold">
           Blog
-          <span className="text-yellow-300">
+          <span className="text-orange-600">
             Sphere
           </span>
         </h1>
@@ -61,40 +62,74 @@ const Navbar = ({ setSearchTerm }) => {
       <input
         type="text"
         placeholder="Search title, author, category..."
-        className="px-3 py-1 rounded text-black bg-white"
+        className="hidden lg:block px-5 py-2.5 rounded-full bg-gray-200 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-black dark:text-white"
         onChange={(e) => setSearchTerm(e.target.value)}
       />
 
       {/* Desktop Menu */}
       <div className="hidden md:flex items-center gap-5">
 
-        <Link to="/">Home</Link>
 
+        <NavLink
+          to="/"
+          className={({ isActive }) =>
+            `font-medium transition-colors duration-200 ${isActive
+              ? "text-orange-600 dark:text-orange-400"
+              : "text-gray-600 dark:text-gray-300 hover:text-violet-600"
+            }`
+          }
+        >
+          Home
+        </NavLink>
+
+
+
+        <NavLink
+          to="/about"
+          className={({ isActive }) =>
+            `font-medium transition-colors duration-200 ${isActive
+              ? "text-orange-600 dark:text-orange-400"
+              : "text-gray-600 dark:text-gray-300 hover:text-violet-600"
+            }`
+          }> About</NavLink>
+
+
+        {/* my blog after login */}
         {user && (
-          <Link to="/create">
-            Create Blog
-          </Link>
+          <NavLink
+            to="/myblogs"
+            className={({ isActive }) =>
+              `font-medium transition-colors duration-200 ${isActive
+                ? "text-orange-600 dark:text-orange-400"
+                : "text-gray-600 dark:text-gray-300 hover:text-violet-600"
+              }`
+            }
+          >
+            My Blogs
+          </NavLink>
         )}
 
+
+        {/* dark/light */}
         <button
           onClick={toggleDarkMode}
-          className="bg-white text-black px-3 py-1 rounded"
+          className="p-2 rounded-lg   bg-orange-200 hover:bg-orange-400 dark:hover:bg-gray-700 transition"
         >
-          {darkMode ? "Light" : "Dark"}
+          {darkMode ? <Sun size={20} /> : <Moon size={20} />}
         </button>
 
         {!user ? (
           <>
             <Link
               to="/login"
-              className="bg-blue-600 px-3 py-1 rounded"
+              className="border border-orange-500 px-4 py-2 rounded-full hover:bg-orange-500 hover:text-white transition"
             >
               Login
             </Link>
 
             <Link
               to="/register"
-              className="bg-green-600 px-3 py-1 rounded"
+              className="bg-orange-500  hover:bg-orange-700 text-white px-4 py-2 rounded-full"
             >
               Register
             </Link>
@@ -102,7 +137,7 @@ const Navbar = ({ setSearchTerm }) => {
         ) : (
           <button
             onClick={() => dispatch(logout())}
-            className="bg-red-600 px-3 py-1 rounded"
+            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-full transition"
           >
             Logout
           </button>
@@ -125,38 +160,48 @@ const Navbar = ({ setSearchTerm }) => {
             Home
           </Link>
 
+
+          <Link to="/about" onClick={() => setMenuOpen(false)}>
+            About
+          </Link>
+
+
           {user && (
             <Link
-              to="/create"
+              to="/myblogs"
               onClick={() => setMenuOpen(false)}
             >
-              Create Blog
+              My Blogs
             </Link>
           )}
 
+
+
           <button
             onClick={toggleDarkMode}
-            className="bg-white text-black px-3 py-1 rounded"
+            className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition"
           >
-            {darkMode ? "Light" : "Dark"}
+            {darkMode ? <Sun size={20} /> : <Moon size={20} />}
           </button>
+
+
+
 
           {!user ? (
             <>
               <Link
                 to="/login"
                 onClick={() => setMenuOpen(false)}
-              >
-                Login
-              </Link>
+              > Login </Link>
 
               <Link
                 to="/register"
                 onClick={() => setMenuOpen(false)}
-              >
-                Register
+              > Register
               </Link>
+
             </>
+
           ) : (
             <button
               onClick={() => {
