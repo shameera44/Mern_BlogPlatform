@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import HeroSection from "../components/HeroSection";
 import CategorySection from "../components/CategorySection";
+import Pagination from "../components/Pagination";
 
 const Home = ({ searchTerm }) => {
 
@@ -84,26 +85,29 @@ const Home = ({ searchTerm }) => {
         {/* Hero Section */}
 
         {currentPage === 1 && (
-          <HeroSection
-            blogs={blogs}
-            user={user}
-          />
+          <>
+            <HeroSection
+              blogs={blogs}
+              user={user}
+            />
+
+
+
+            {/* Category Section */}
+
+            <CategorySection
+              selectedCategory={selectedCategory}
+              setSelectedCategory={setSelectedCategory} />
+
+
+
+            {/* TITLE */}
+            <h1 className="text-4xl font-bold mb-4 mt-2 bg-gray-500 text-white text-center py-2 rounded">
+              Latest Blogs
+            </h1>
+
+          </>
         )}
-
-
-        {/* Category Section */}
-
-        <CategorySection
-          selectedCategory={selectedCategory}
-          setSelectedCategory={setSelectedCategory}
-        />
-
-
-
-        {/* TITLE */}
-        <h1 className="text-4xl font-bold mb-4 mt-2 bg-gray-500 text-white text-center py-2 rounded">
-          Latest Blogs
-        </h1>
 
         {/* BLOG GRID */}
 
@@ -182,37 +186,11 @@ const Home = ({ searchTerm }) => {
 
         {/* PAGINATION */}
 
-        <div className="flex justify-center items-center gap-2 mt-10">
-          <button
-            onClick={() => setCurrentPage(prev => prev - 1)}
-            disabled={currentPage === 1}
-            className="px-3 py-1 bg-gray-300 rounded disabled:opacity-50"
-          >
-            Prev
-          </button>
-
-          {Array.from({ length: totalPages }, (_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentPage(index + 1)}
-              className={`px-3 py-1 rounded ${currentPage === index + 1
-                ? "bg-blue-600 text-white"
-                : "bg-gray-300"
-                }`}
-            >
-              {index + 1}
-            </button>
-          ))}
-
-          <button
-            onClick={() => setCurrentPage(prev => prev + 1)}
-            disabled={currentPage === totalPages}
-            className="px-3 py-1 bg-gray-300 rounded disabled:opacity-50"
-          >
-            Next
-          </button>
-
-        </div>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          setCurrentPage={setCurrentPage}
+        />
 
       </div>
     </div>
