@@ -3,8 +3,10 @@ import API from "../../api/axios";
 
 const initialState = {
   posts: [],
+  myBlogs: [],
   loading: false,
   error: null,
+
 };
 
 /* =========================
@@ -16,6 +18,30 @@ export const fetchBlogs = createAsyncThunk(
     try {
       const res = await API.get("/blogs");
       return res.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || error.message
+      );
+    }
+  }
+);
+
+// fetch my blog
+
+export const fetchMyBlogs = createAsyncThunk(
+  "blog/fetchMyBlogs",
+  async (_, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.token;
+
+      const res = await API.get("/blogs/myblogs", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      return res.data;
+
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error.response?.data?.message || error.message
@@ -134,6 +160,21 @@ const blogSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
+
+
+      /* FETCH MY BLOGS */
+      .addCase(fetchMyBlogs.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchMyBlogs.fulfilled, (state, action) => {
+        state.loading = false;
+        state.myBlogs = action.payload;
+      })
+      .addCase(fetchMyBlogs.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
 
       /* CREATE */
       .addCase(createBlog.fulfilled, (state, action) => {

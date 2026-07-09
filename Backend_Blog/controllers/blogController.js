@@ -215,6 +215,27 @@ export const searchBlog = async (req, res) => {
 };
 
 
+// get my blogs only
+
+export const getMyBlogs = async (req, res) => {
+  try {
+    console.log("===== MY BLOGS API =====");
+    console.log("req.user =", req.user);
+
+    const blogs = await blogModel.find({
+      owner: req.user.id,
+    });
+
+    res.status(200).json(blogs);
+
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+
 // AI SUMMARY
 
 
