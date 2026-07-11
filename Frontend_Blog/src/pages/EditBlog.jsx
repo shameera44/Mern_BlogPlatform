@@ -15,7 +15,7 @@ const EditBlog = () => {
   const editorRef = useRef(null);
   const quillRef = useRef(null);
 
-  // 🔥 FIXED: safe id comparison
+  // FIXED: safe id comparison
   const blogs = useSelector(state => state.blog.posts);
   const blog = blogs.find(
     b => String(b._id) === String(id)

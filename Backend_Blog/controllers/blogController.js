@@ -56,7 +56,7 @@ export const createBlog = async (req, res) => {
             });
         }
 
-        
+
         const blog = await blogModel.create({
             title,
             author,
@@ -65,7 +65,7 @@ export const createBlog = async (req, res) => {
             description,
             image,
             owner: req.user.id,
-            
+
         });
 
         res.status(201).json({
@@ -156,7 +156,7 @@ export const updateBlog = async (req, res) => {
 
 // Delete Blog
 export const deleteBlog = async (req, res) => {
-     console.log("DELETE CONTROLLER HIT");
+    console.log("DELETE CONTROLLER HIT");
 
     try {
         const blog = await blogModel.findById(req.params.id);
@@ -218,21 +218,21 @@ export const searchBlog = async (req, res) => {
 // get my blogs only
 
 export const getMyBlogs = async (req, res) => {
-  try {
-    console.log("===== MY BLOGS API =====");
-    console.log("req.user =", req.user);
+    try {
+        console.log("===== MY BLOGS API =====");
+        console.log("req.user =", req.user);
 
-    const blogs = await blogModel.find({
-      owner: req.user.id,
-    });
+        const blogs = await blogModel.find({
+            owner: req.user.id,
+        });
 
-    res.status(200).json(blogs);
+        res.status(200).json(blogs);
 
-  } catch (error) {
-    res.status(500).json({
-      message: error.message,
-    });
-  }
+    } catch (error) {
+        res.status(500).json({
+            message: error.message,
+        });
+    }
 };
 
 
@@ -240,42 +240,41 @@ export const getMyBlogs = async (req, res) => {
 
 
 export const generateSummary = async (req, res) => {
-  try {
-    const { content } = req.body;
+    try {
+        const { content } = req.body;
 
-    if (!content) {
-      return res.status(400).json({ message: "Content required" });
+        if (!content) {
+            return res.status(400).json({ message: "Content required" });
+        }
+
+        const response = await axios.post(
+            `https://generativelanguage.googleapis.com/v1/models/gemini-3.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
+            {
+                contents: [
+                    {
+                        parts: [
+                            {
+                                text: `Summarize this blog in 3-4 lines:\n\n${content}`,
+                            },
+                        ],
+                    },
+                ],
+            }
+        );
+
+        const summary =
+            response.data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+        res.json({ summary });
+
+    } catch (error) {
+        console.error(error.message);
+
+        res.status(500).json({
+            message:
+                error.response?.data?.error?.message ||
+                "Failed to generate summary",
+        });
     }
-
-    const response = await axios.post(
-      `https://generativelanguage.googleapis.com/v1/models/gemini-3.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
-      {
-        contents: [
-          {
-            parts: [
-              {
-                text: `Summarize this blog in 3-4 lines:\n\n${content}`,
-              },
-            ],
-          },
-        ],
-      }
-    );
-
-    const summary =
-      response.data.candidates?.[0]?.content?.parts?.[0]?.text;
-
-    res.json({ summary });
-
-  } catch (error) {
-  console.log("========== GEMINI ERROR ==========");
-  console.log(error.response?.status);
-  console.log(error.response?.data);
-  console.log(error.message);
-
-  res.status(500).json({
-    message: error.response?.data || error.message,
-  });
-}
 };
 

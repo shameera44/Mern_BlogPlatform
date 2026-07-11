@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { calculateReadingTime } from "../utils/readingTime";
+import { Pencil, Trash2 } from "lucide-react";
 
 const BlogCard = ({
   id,
@@ -41,12 +42,59 @@ const BlogCard = ({
     <Link to={`/postdetails/${id}`}>
       <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition dark:bg-gray-900 text-black dark:text-white">
 
-        {/* Image */}
+
+        <div className="relative">
+
+          <img
+            src={image}
+            alt={title}
+            className="w-full h-48 object-cover rounded-t-lg"
+          />
+
+          {showActions && (
+            <div className="absolute top-3 right-3 flex gap-2">
+
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onEdit();
+                }}
+                className="bg-white/90 dark:bg-gray-800 p-2 rounded-full
+        hover:bg-orange-500 hover:text-white transition shadow-lg"
+              >
+                <Pencil size={18} />
+              </button>
+
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+
+                  const confirmDelete = window.confirm(
+                    "Are you sure you want to delete this blog?"
+                  );
+                  if (confirmDelete) {
+                    onDelete();
+                  }
+                }}
+                className="bg-white/90 dark:bg-gray-800 p-2 rounded-full
+        hover:bg-red-500 hover:text-white transition shadow-lg"
+              >
+                <Trash2 size={18} />
+              </button>
+
+            </div>
+          )}
+
+        </div>
+
+        {/* Image
         <img
           src={image}
           alt={title}
           className="w-full h-48 object-cover"
-        />
+        /> */}
 
         <div className="p-4">
 
@@ -72,41 +120,22 @@ const BlogCard = ({
           </div>
 
           {/* Buttons */}
-          {/* <div className="flex gap-2 mt-3">
+          {/* {showActions && (
+            <div className="flex justify-end gap-3 mt-5 border-t pt-4">
 
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                onEdit();
-              }}
-              className="bg-yellow-500 text-white px-3 py-1 rounded cursor-pointer"
-            >
-              Edit
-            </button>
-
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                onDelete();
-              }}
-              className="bg-red-600 text-white px-3 py-1 rounded cursor-pointer"
-            >
-              Delete
-            </button>
-
-          </div> */}
-
-          {/* Buttons */}
-          {showActions && (
-            <div className="flex gap-2 mt-3">
               <button
                 onClick={(e) => {
                   e.preventDefault();
                   onEdit();
                 }}
-                className="bg-yellow-500 text-white px-3 py-1 rounded cursor-pointer"
+                className="group flex items-center gap-2 px-4 py-2 rounded-xl
+      bg-orange-100 dark:bg-orange-900/30
+      text-orange-600 dark:text-orange-400
+      hover:bg-orange-500 hover:text-white
+      transition-all duration-300 shadow-sm hover:shadow-md"
               >
-                Edit
+                <Pencil size={18} />
+                <span className="text-sm font-medium">Edit</span>
               </button>
 
               <button
@@ -114,13 +143,18 @@ const BlogCard = ({
                   e.preventDefault();
                   onDelete();
                 }}
-                className="bg-red-600 text-white px-3 py-1 rounded cursor-pointer"
+                className="group flex items-center gap-2 px-4 py-2 rounded-xl
+      bg-red-100 dark:bg-red-900/30
+      text-red-600 dark:text-red-400
+      hover:bg-red-500 hover:text-white
+      transition-all duration-300 shadow-sm hover:shadow-md"
               >
-                Delete
+                <Trash2 size={18} />
+                <span className="text-sm font-medium">Delete</span>
               </button>
-            </div>
-          )}
 
+            </div>
+          )} */}
         </div>
       </div>
     </Link>
