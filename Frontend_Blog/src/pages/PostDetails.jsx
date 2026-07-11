@@ -51,10 +51,15 @@ const response = await axios.post(
 );
 
       setSummary(response.data.summary);
-    } catch (error) {
-      console.log(error);
-      alert("Failed to generate summary");
-    } finally {
+    }catch (error) {
+  console.error(error.response?.data || error);
+
+  alert(
+    error.response?.data?.message ||
+    "Failed to generate summary"
+  );
+}
+ finally {
       setLoading(false);
     }
   };

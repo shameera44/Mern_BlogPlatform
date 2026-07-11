@@ -102,7 +102,7 @@ const Home = ({ searchTerm }) => {
 
 
             {/* TITLE */}
-            <h1 className="text-4xl font-bold mb-4 mt-2 bg-gray-500 text-white text-center py-2 rounded">
+            <h1 className="text-4xl font-bold mb-4 mt-2 bg-orange-100 text-orange-600 text-center py-2 rounded-full">
               Latest Blogs
             </h1>
 

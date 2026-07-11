@@ -11,11 +11,12 @@ const BlogCard = ({
   content,
   onEdit,
   onDelete,
-  searchTerm
+  searchTerm,
+  showActions = false,
 }) => {
 
   const readingTime = calculateReadingTime(content);
-  
+
   // Highlight search text
   const highlightText = (text) => {
     if (!searchTerm || !text) return text;
@@ -71,7 +72,7 @@ const BlogCard = ({
           </div>
 
           {/* Buttons */}
-          <div className="flex gap-2 mt-3">
+          {/* <div className="flex gap-2 mt-3">
 
             <button
               onClick={(e) => {
@@ -93,7 +94,32 @@ const BlogCard = ({
               Delete
             </button>
 
-          </div>
+          </div> */}
+
+          {/* Buttons */}
+          {showActions && (
+            <div className="flex gap-2 mt-3">
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  onEdit();
+                }}
+                className="bg-yellow-500 text-white px-3 py-1 rounded cursor-pointer"
+              >
+                Edit
+              </button>
+
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  onDelete();
+                }}
+                className="bg-red-600 text-white px-3 py-1 rounded cursor-pointer"
+              >
+                Delete
+              </button>
+            </div>
+          )}
 
         </div>
       </div>

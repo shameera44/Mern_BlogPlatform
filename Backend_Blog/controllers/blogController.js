@@ -268,10 +268,14 @@ export const generateSummary = async (req, res) => {
     res.json({ summary });
 
   } catch (error) {
-    console.log("GEMINI ERROR:", error.response?.data || error.message);
+  console.log("========== GEMINI ERROR ==========");
+  console.log(error.response?.status);
+  console.log(error.response?.data);
+  console.log(error.message);
 
-    res.status(500).json({
-      message: error.message,
-    });
-  }
+  res.status(500).json({
+    message: error.response?.data || error.message,
+  });
+}
 };
+

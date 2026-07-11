@@ -13,6 +13,7 @@ const MyBlogs = () => {
   const myBlogs = useSelector((state) => state.blog.myBlogs);
 
   useEffect(() => {
+     console.log("TOKEN:", localStorage.getItem("token"));
     dispatch(fetchMyBlogs());
   }, [dispatch]);
   
@@ -31,8 +32,8 @@ const MyBlogs = () => {
     <div className="max-w-7xl mx-auto px-4 py-8">
 
       <div className="flex justify-between items-center mb-8">
-        <div>
-          <h1 className="text-4xl font-bold">My Blogs</h1>
+        <div >
+          <h1 className="text-4xl font-bold text-center">My Blogs</h1>
           <p className="text-gray-500 mt-2">
             Manage your published blogs.
           </p>
@@ -43,6 +44,7 @@ const MyBlogs = () => {
           className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-full"
         >
           Create Blog
+          
         </button>
       </div>
 
@@ -57,6 +59,7 @@ const MyBlogs = () => {
             category={blog.category}
             image={blog.image}
             content={blog.content}
+             showActions={true}
             onEdit={() => navigate(`/edit/${blog._id}`)}
             onDelete={() => handleDelete(blog._id)}
           />
