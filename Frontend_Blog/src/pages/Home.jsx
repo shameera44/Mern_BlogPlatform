@@ -1,10 +1,8 @@
 
 import BlogCard from "../components/BlogCard";
 import { useSelector, useDispatch } from "react-redux";
-import { deleteBlog, fetchBlogs } from "../features/blog/blogSlice";
-import { useNavigate } from "react-router-dom";
+import {  fetchBlogs } from "../features/blog/blogSlice";
 import { useState, useEffect } from "react";
-import toast from "react-hot-toast";
 import HeroSection from "../components/HeroSection";
 import CategorySection from "../components/CategorySection";
 import Pagination from "../components/Pagination";
@@ -15,7 +13,7 @@ const Home = ({ searchTerm }) => {
   const user = useSelector(state => state.auth.user);
 
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  
 
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
@@ -126,51 +124,8 @@ const Home = ({ searchTerm }) => {
                   image={blog.image}
                   content={blog.content}
                   searchTerm={searchTerm}
-
-                  onEdit={() => {
-                    console.log("User:", user);
-                    console.log("Blog Owner:", blog.owner);
-
-                    // 1. check login
-                    if (!user) {
-                      toast.error("Please login to edit blog");
-                      navigate("/login");
-                      return;
-                    }
-
-                    // 2. check ownership
-                    if (user.id !== blog.owner) {
-                      toast.error("You are not the author of this blog");
-                      return;
-                    }
-
-                    navigate(`/edit/${blog._id}`);
-                  }}
-
-                  onDelete={async () => {
-                    console.log("User:", user);
-                    console.log("Blog Owner:", blog.owner);
-
-                    // 1. login check
-                    if (!user) {
-                      toast.error("Please login to delete blog");
-                      navigate("/login");
-                      return;
-                    }
-
-                    // 2. ownership check
-                    if (user.id !== blog.owner) {
-                      toast.error("You are not the author of this blog");
-                      return;
-                    }
-
-                    try {
-                      await dispatch(deleteBlog(blog._id)).unwrap();
-                      toast.success("Blog deleted");
-                    } catch (err) {
-                      toast.error(err || "Delete failed");
-                    }
-                  }}
+                  showActions={false}
+                 
                 />
 
 

@@ -10,7 +10,6 @@ export const createBlog = async (req, res) => {
     try {
         const {
             title,
-           // author,
             category,
             content,
             description,
@@ -31,11 +30,7 @@ export const createBlog = async (req, res) => {
             });
         }
 
-        // if (author !== user.username) {
-        //     return res.status(403).json({
-        //         message: "Author name must match logged in username"
-        //     });
-        // }
+       
 
         let image = "";
 
@@ -59,7 +54,6 @@ export const createBlog = async (req, res) => {
 
         const blog = await blogModel.create({
             title,
-           // author,
             category,
             content,
             description,
