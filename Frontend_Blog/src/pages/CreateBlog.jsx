@@ -14,7 +14,7 @@ const CreateBlog = () => {
   const [formData, setFormData] = useState({
 
     title: "",
-    author: "",
+   // author: "",
     category: "",
     description: "",
 
@@ -48,7 +48,7 @@ const CreateBlog = () => {
     }
 
     blogData.append("title", formData.title);
-    blogData.append("author", formData.author);
+    //blogData.append("author", formData.author);
     blogData.append("category", formData.category);
     blogData.append("description", formData.description);
     blogData.append("content", content);
@@ -107,14 +107,14 @@ const CreateBlog = () => {
           required
         />
 
-        <input
+        {/* <input
           type="text"
           name="author"
           placeholder="Author Name"
           className="border p-2 w-full mb-3"
           onChange={handleChange}
           required
-        />
+        /> */}
 
         <input
           type="text"

@@ -10,14 +10,14 @@ export const createBlog = async (req, res) => {
     try {
         const {
             title,
-            author,
+           // author,
             category,
             content,
             description,
             imageUrl
         } = req.body;
 
-        if (!title || !author || !category || !content || !description) {
+        if (!title  || !category || !content || !description) {
             return res.status(400).json({
                 message: "Some fields are empty"
             });
@@ -31,11 +31,11 @@ export const createBlog = async (req, res) => {
             });
         }
 
-        if (author !== user.username) {
-            return res.status(403).json({
-                message: "Author name must match logged in username"
-            });
-        }
+        // if (author !== user.username) {
+        //     return res.status(403).json({
+        //         message: "Author name must match logged in username"
+        //     });
+        // }
 
         let image = "";
 
@@ -59,11 +59,12 @@ export const createBlog = async (req, res) => {
 
         const blog = await blogModel.create({
             title,
-            author,
+           // author,
             category,
             content,
             description,
             image,
+            author: user.username,
             owner: req.user.id,
 
         });

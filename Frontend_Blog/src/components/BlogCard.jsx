@@ -89,12 +89,7 @@ const BlogCard = ({
 
         </div>
 
-        {/* Image
-        <img
-          src={image}
-          alt={title}
-          className="w-full h-48 object-cover"
-        /> */}
+        
 
         <div className="p-4">
 
@@ -119,42 +114,7 @@ const BlogCard = ({
             <span>⏱️ {readingTime} min read</span>
           </div>
 
-          {/* Buttons */}
-          {/* {showActions && (
-            <div className="flex justify-end gap-3 mt-5 border-t pt-4">
-
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  onEdit();
-                }}
-                className="group flex items-center gap-2 px-4 py-2 rounded-xl
-      bg-orange-100 dark:bg-orange-900/30
-      text-orange-600 dark:text-orange-400
-      hover:bg-orange-500 hover:text-white
-      transition-all duration-300 shadow-sm hover:shadow-md"
-              >
-                <Pencil size={18} />
-                <span className="text-sm font-medium">Edit</span>
-              </button>
-
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  onDelete();
-                }}
-                className="group flex items-center gap-2 px-4 py-2 rounded-xl
-      bg-red-100 dark:bg-red-900/30
-      text-red-600 dark:text-red-400
-      hover:bg-red-500 hover:text-white
-      transition-all duration-300 shadow-sm hover:shadow-md"
-              >
-                <Trash2 size={18} />
-                <span className="text-sm font-medium">Delete</span>
-              </button>
-
-            </div>
-          )} */}
+          
         </div>
       </div>
     </Link>
